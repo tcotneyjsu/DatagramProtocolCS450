@@ -59,7 +59,9 @@ public class UDPProgram extends javax.swing.JFrame {
                     received = true;
                     serverText.append("Packet " + clientSent + " received at " + new Date( )+"\n");
                     // Display packet information
-                    InetAddress remote_addr = packet.getAddress();
+                    //InetAddress remote_addr = packet.getAddress();
+                    byte[] ipAddr = new byte[]{(byte)192, (byte)168, (byte)1, (byte)72};
+                    InetAddress remote_addr = InetAddress.getByAddress(ipAddr);
                     serverText.append("Sender: " + remote_addr.getHostAddress( )+"\n" );
                     serverText.append("from Port: " + packet.getPort()+"\n");
 
@@ -121,7 +123,9 @@ public class UDPProgram extends javax.swing.JFrame {
 
                 clientText.append("Looking for hostname " + hostname+"\n");
                     //get the InetAddress object
-                InetAddress remote_addr = InetAddress.getByName(hostname);
+                //InetAddress remote_addr = InetAddress.getByName(hostname);
+                byte[] ipAddr = new byte[]{(byte)192, (byte)168, (byte)1, (byte)99};
+                InetAddress remote_addr = InetAddress.getByAddress(ipAddr);
                 //check its IP number
                 clientText.append("Hostname has IP address = " + remote_addr.getHostAddress()+"\n");
                         //configure the DataGramPacket
