@@ -22,7 +22,6 @@ import java.net.DatagramPacket;//Had to import both because of constructor error
  */
 public class UDPProgram extends javax.swing.JFrame {
     private DatagramSocket socket;
-    private boolean received = false;
     private byte[] buffer = new byte[256];
     private Random random;
     long startTime;
@@ -31,6 +30,7 @@ public class UDPProgram extends javax.swing.JFrame {
     long totalDuration;
     long[] pings;
     int clientSent = 1;
+    public boolean received;
     /**
      * Creates new form UDPProgram
      */
@@ -56,12 +56,10 @@ public class UDPProgram extends javax.swing.JFrame {
                 
                 socket.receive(packet);
                 if(random.nextInt(3) != 1){
-                    received = true;
+                    //received = true;
                     serverText.append("Packet " + clientSent + " received at " + new Date( )+"\n");
                     // Display packet information
-                    //InetAddress remote_addr = packet.getAddress();
-                    byte[] ipAddr = new byte[]{(byte)192, (byte)168, (byte)1, (byte)72};
-                    InetAddress remote_addr = InetAddress.getByAddress(ipAddr);
+                    InetAddress remote_addr = packet.getAddress();
                     serverText.append("Sender: " + remote_addr.getHostAddress( )+"\n" );
                     serverText.append("from Port: " + packet.getPort()+"\n");
 
@@ -89,7 +87,7 @@ public class UDPProgram extends javax.swing.JFrame {
                             + " was lost, now Hangry c(-_-c), " +"\n"
                             + "continuing to next iterration."+"\n\n");
                     
-                    clientSent++;
+                    //clientSent++;
                     
                 }
                 
@@ -104,6 +102,7 @@ public class UDPProgram extends javax.swing.JFrame {
     class UDClient extends Thread{
         //use localhost to experiment on a standalone computer
         //@Override
+        public UDClient(){}
         public void run(){
         String hostname="localhost";    String message = "HELLO USING UDP!";
         while(clientSent < 11){
@@ -124,7 +123,7 @@ public class UDPProgram extends javax.swing.JFrame {
                 clientText.append("Looking for hostname " + hostname+"\n");
                     //get the InetAddress object
                 //InetAddress remote_addr = InetAddress.getByName(hostname);
-                byte[] ipAddr = new byte[]{(byte)192, (byte)168, (byte)1, (byte)99};
+                byte[] ipAddr = new byte[]{(byte)192, (byte)168, (byte)1, (byte)82};
                 InetAddress remote_addr = InetAddress.getByAddress(ipAddr);
                 //check its IP number
                 clientText.append("Hostname has IP address = " + remote_addr.getHostAddress()+"\n");
@@ -132,20 +131,21 @@ public class UDPProgram extends javax.swing.JFrame {
                         packet.setAddress(remote_addr);
                         packet.setPort(2000);
                         //send the packet
-                        Random random = new Random();
-                       //if(random.nextInt(2) == 1){
-                            socket.send(packet);
-                            //startTime = System.currentTimeMillis();
-                       //}
-                       //socket.close();
+                        socket.send(packet);
 		clientText.append("Packet sent at: " + new Date()+"\n");
 
 		// Display packet information
 		clientText.append("Sent by  : " + remote_addr.getHostAddress()+"\n");
         		clientText.append("Send from: " + packet.getPort()+"\n");
-                waitTime = System.currentTimeMillis();
-                while((System.currentTimeMillis()-waitTime) < 300 && !received){
+                packetStatus status = new packetStatus(socket, packet);
+                status.start();
+                long elapsedTime=0;
+                while(elapsedTime < 300){
+                    waitTime = System.currentTimeMillis();
+                    elapsedTime = waitTime - startTime;
+                
                 }
+                status.interrupt();
                 if(received){
                     socket.receive(packet);
                     stopTime = System.currentTimeMillis();
@@ -158,6 +158,8 @@ public class UDPProgram extends javax.swing.JFrame {
                 }
                 else clientText.append("Packet was"
                         + " not acknowleged by the host!\n\n");
+                        received = false;
+                        clientSent++;
 		}
                 catch (UnknownHostException ue){
                         clientText.append("Unknown host "+hostname+"\n");
@@ -168,6 +170,24 @@ public class UDPProgram extends javax.swing.JFrame {
             }
         }
     }
+    class packetStatus extends Thread{
+        public DatagramSocket s;
+        public DatagramPacket p;
+        public packetStatus(DatagramSocket socket, DatagramPacket packet) throws IOException{
+            s = socket;
+            p = packet;
+        }
+        @Override
+        public void run(){
+            try{
+                s.receive(p);
+                System.out.println("test");
+                received = true;
+            }
+            catch(Exception e){}
+        }
+    }
+        
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
