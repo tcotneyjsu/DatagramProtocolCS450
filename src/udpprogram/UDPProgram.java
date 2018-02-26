@@ -9,11 +9,11 @@ import java.util.Random;
 import java.awt.event.*;
 import java.util.*;
 import java.io.*;
-import javax.swing.*;
-import javax.swing.Timer;
 import java.net.*;
 import java.net.DatagramSocket;//Had to import both because of constructor errors
 import java.net.DatagramPacket;//Had to import both because of constructor errors
+import javax.swing.*;
+import javax.swing.Timer;
 
 
 /**@Author Travis Cotney, Aaron Branham, Morgan Sweatman
