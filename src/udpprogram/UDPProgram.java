@@ -181,6 +181,7 @@ public class UDPProgram extends javax.swing.JFrame {
         clientText = new javax.swing.JTextArea();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
+        serverCheck = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -208,21 +209,24 @@ public class UDPProgram extends javax.swing.JFrame {
 
         jLabel3.setText("Client");
 
+        serverCheck.setText("Server Mode");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
+                                .addGap(0, 4, Short.MAX_VALUE)
                                 .addComponent(pingButton)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 309, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(201, 201, 201)
+                                .addGap(205, 205, 205)
                                 .addComponent(jLabel2)))
                         .addGap(4, 4, 4)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -231,6 +235,8 @@ public class UDPProgram extends javax.swing.JFrame {
                                 .addComponent(jLabel3)
                                 .addGap(132, 132, 132))))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(serverCheck)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel1)
                         .addGap(268, 268, 268))))
         );
@@ -239,7 +245,9 @@ public class UDPProgram extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(serverCheck))
                         .addGap(72, 72, 72)
                         .addComponent(pingButton)
                         .addGap(0, 0, Short.MAX_VALUE))
@@ -261,10 +269,14 @@ public class UDPProgram extends javax.swing.JFrame {
     private void pingButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pingButtonActionPerformed
         // TODO add your handling code here:
         random = new Random();
-        Thread thread_2 = new UDClient();
-        Thread thread_1 = new UDServer();
-        thread_2.start();
-        thread_1.start();
+        if(serverCheck.isSelected()){
+            Thread thread_1 = new UDServer();
+            thread_1.start();
+        }
+        else{
+            Thread thread_2 = new UDClient();
+            thread_2.start();  
+        }
         
     }//GEN-LAST:event_pingButtonActionPerformed
 
@@ -311,6 +323,7 @@ public class UDPProgram extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JButton pingButton;
+    private javax.swing.JCheckBox serverCheck;
     private javax.swing.JTextArea serverText;
     // End of variables declaration//GEN-END:variables
 }
