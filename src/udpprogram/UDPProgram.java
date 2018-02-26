@@ -46,7 +46,6 @@ public class UDPProgram extends javax.swing.JFrame {
                     
                 // Create a datagram socket, bound to the specific port 2000
                 DatagramSocket socket = new DatagramSocket(2000);
-
                 serverText.append("Bound to local port " + socket.getLocalPort()+"\n");
                 while(true){ 
                     // Create a datagram packet, containing a maximum buffer of 256 byte 
@@ -117,13 +116,13 @@ public class UDPProgram extends javax.swing.JFrame {
                 pOut.print(message);
                 //convert printstream to byte array
                 byte [ ] bArray = bOut.toByteArray();
-		// Create a datagram packet, containing a maximum buffer of 256 bytes
+		//Create a datagram packet, containing a maximum buffer of 256 bytes
 		DatagramPacket packet=new DatagramPacket( bArray, bArray.length );
 
                 clientText.append("Looking for hostname " + hostname+"\n");
                     //get the InetAddress object
                 //InetAddress remote_addr = InetAddress.getByName(hostname);
-                byte[] ipAddr = new byte[]{(byte)192, (byte)168, (byte)1, (byte)82};
+                byte[] ipAddr = new byte[]{(byte)192, (byte)168, (byte)1, (byte)98};
                 InetAddress remote_addr = InetAddress.getByAddress(ipAddr);
                 //check its IP number
                 clientText.append("Hostname has IP address = " + remote_addr.getHostAddress()+"\n");
@@ -140,14 +139,15 @@ public class UDPProgram extends javax.swing.JFrame {
                 packetStatus status = new packetStatus(socket, packet);
                 status.start();
                 long elapsedTime=0;
-                while(elapsedTime < 300){
+                while((elapsedTime < 300) && !received){
                     waitTime = System.currentTimeMillis();
                     elapsedTime = waitTime - startTime;
                 
                 }
                 status.interrupt();
+                System.out.println("test2");
                 if(received){
-                    socket.receive(packet);
+                    //socket.receive(packet);
                     stopTime = System.currentTimeMillis();
                     totalDuration = stopTime - startTime;
                     clientText.append("Host acknowledged packet " + clientSent + " after " +
@@ -156,10 +156,12 @@ public class UDPProgram extends javax.swing.JFrame {
                     clientSent++;
                     
                 }
-                else clientText.append("Packet was"
+                else {clientText.append("Packet was"
                         + " not acknowleged by the host!\n\n");
                         received = false;
                         clientSent++;
+                }
+  
 		}
                 catch (UnknownHostException ue){
                         clientText.append("Unknown host "+hostname+"\n");
@@ -197,6 +199,9 @@ public class UDPProgram extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jTextField2 = new javax.swing.JTextField();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
         pingButton = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -206,6 +211,13 @@ public class UDPProgram extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         serverCheck = new javax.swing.JCheckBox();
+        IPField = new javax.swing.JTextField();
+
+        jTextField2.setText("jTextField2");
+
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(5);
+        jScrollPane3.setViewportView(jTextArea1);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -235,14 +247,20 @@ public class UDPProgram extends javax.swing.JFrame {
 
         serverCheck.setText("Server Mode");
 
+        IPField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                IPFieldActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(0, 4, Short.MAX_VALUE)
@@ -258,11 +276,13 @@ public class UDPProgram extends javax.swing.JFrame {
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addComponent(jLabel3)
                                 .addGap(132, 132, 132))))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(serverCheck)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel1)
-                        .addGap(268, 268, 268))))
+                        .addGap(88, 88, 88)
+                        .addComponent(IPField, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -270,7 +290,9 @@ public class UDPProgram extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(IPField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(serverCheck))
                         .addGap(72, 72, 72)
                         .addComponent(pingButton)
@@ -303,6 +325,10 @@ public class UDPProgram extends javax.swing.JFrame {
         }
         
     }//GEN-LAST:event_pingButtonActionPerformed
+
+    private void IPFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_IPFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_IPFieldActionPerformed
 
     /**
      * @param args the command line arguments
@@ -340,12 +366,16 @@ public class UDPProgram extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField IPField;
     private javax.swing.JTextArea clientText;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JTextField jTextField2;
     private javax.swing.JButton pingButton;
     private javax.swing.JCheckBox serverCheck;
     private javax.swing.JTextArea serverText;
